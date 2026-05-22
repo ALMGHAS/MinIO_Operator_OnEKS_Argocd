@@ -1,0 +1,21 @@
+# values-minio-test.yaml
+mode: standalone
+replicas: 1
+
+rootUser: minioadmin
+rootPassword: minioadmin123
+
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClass: gp3
+
+resources:
+  requests:
+    memory: 512Mi
+
+service:
+  type: ClusterIP
+
+consoleService:
+  type: ClusterIP

@@ -1,0 +1,70 @@
+######## minio-prod-tenant-values.yaml
+
+tenant:
+  name: minio-prod
+  configurSecret:
+    name: minio-root-user
+  image:
+    repository: quay.io/minio/minio
+    tag: RELEASE.2025-04-08T15-41-24Z
+    pullPolicy: IfNotPresent
+
+  # Use existing secret instead of plain root credentials in values.
+  #configuration:
+  #  name: minio-root-user
+
+  pools:
+    - name: pool-0
+      servers: 2
+      volumesPerServer: 2
+      size: 250Gi
+      storageClassName: minio-gp3-retain
+
+      # Production resource requests: adjust after load testing.
+      resources:
+        requests:
+          cpu: "2"
+          memory: 4Gi
+        limits:
+          cpu: "4"
+          memory: 4Gi
+
+      # Spread MinIO pods across nodes.
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: v1.min.io/tenant
+                    operator: In
+                    values:
+                      - minio-prod
+              topologyKey: kubernetes.io/hostname
+
+  mountPath: /export
+
+  requestAutoCert: true
+
+  exposeServices:
+    minio: false
+    console: false
+
+  serviceMetadata:
+    minioServiceLabels: {}
+    minioServiceAnnotations: {}
+    consoleServiceLabels: {}
+    consoleServiceAnnotations: {}
+
+  users: []
+
+  podManagementPolicy: Parallel
+
+  env:
+    - name: MINIO_BROWSER
+      value: "on"
+
+  # Optional but recommended when you integrate identity provider later.
+  # oidc: {}
+
+  # Optional: configure Prometheus scraping depending on your monitoring stack.
+  # prometheusOperator: true
