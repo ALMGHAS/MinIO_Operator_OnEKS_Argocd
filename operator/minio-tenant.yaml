@@ -1,0 +1,31 @@
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: minio
+  namespace: minio-tenant
+spec:
+  image: quay.io/minio/minio:latest
+
+  configuration:
+    name: minio-creds-secret
+
+  pools:
+    - name: pool-0
+      servers: 1
+      volumesPerServer: 1
+
+      nodeSelector:
+        workload: minio
+
+      volumeClaimTemplate:
+        metadata:
+          name: data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: gp3-wait
+          resources:
+            requests:
+              storage: 10Gi
+
+  requestAutoCert: false
