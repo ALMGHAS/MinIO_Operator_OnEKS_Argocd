@@ -2,6 +2,8 @@
 
 This repository contains the Kubernetes and Argo CD manifests used to run MinIO Operator and a production-style MinIO Tenant on Amazon EKS.
 
+For teardown steps, see [CLEANUP.md](D:/D/POCS/Gitlab_ArgoCD_EKS_MultiEnv/CLEANUP.md).
+
 ## Overview
 
 The setup is split into two Argo CD applications:
