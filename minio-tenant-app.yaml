@@ -1,0 +1,24 @@
+# minio-tenant-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-prod-tenant
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/<org>/<gitops-repo>.git
+    targetRevision: main
+    path: minio/tenant
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio-prod
+
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
