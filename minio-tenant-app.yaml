@@ -22,7 +22,8 @@ spec:
 
           configSecret:
             name: minio-root-user
-            existingSecret: true
+            accessKey: minioadmin
+            secretKey: minioadmin123
 
           pools:
             - name: pool-0

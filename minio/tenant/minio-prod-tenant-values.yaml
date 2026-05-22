@@ -11,7 +11,8 @@ tenant:
     # Use an existing secret that contains config.env with root credentials.
     configSecret:
       name: minio-root-user
-      existingSecret: true
+      accessKey: minioadmin
+      secretKey: minioadmin123
 
     pools:
       - name: pool-0
