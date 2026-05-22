@@ -48,13 +48,16 @@ tenant:
 
     exposeServices:
       minio: false
-      console: false
+      console: true
 
     serviceMetadata:
       minioServiceLabels: {}
       minioServiceAnnotations: {}
       consoleServiceLabels: {}
-      consoleServiceAnnotations: {}
+      consoleServiceAnnotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "external"
+        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
 
     users: []
 
