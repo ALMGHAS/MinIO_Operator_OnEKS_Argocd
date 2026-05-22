@@ -8,9 +8,12 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/<org>/<gitops-repo>.git
+    repoURL: https://github.com/ALMGHAS/MinIO_Operator_OnEKS_Argocd.git
     targetRevision: main
     path: minio/tenant
+    helm:
+      valueFiles:
+        - minio-prod-tenant-values.yaml
 
   destination:
     server: https://kubernetes.default.svc
