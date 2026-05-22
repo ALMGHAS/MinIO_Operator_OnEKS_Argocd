@@ -8,12 +8,65 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/ALMGHAS/MinIO_Operator_OnEKS_Argocd.git
-    targetRevision: main
-    path: minio/tenant
+    repoURL: https://operator.min.io
+    chart: tenant
+    targetRevision: 7.1.1
     helm:
-      valueFiles:
-        - minio-prod-tenant-values.yaml
+      values: |
+        tenant:
+          name: minio-prod
+          image:
+            repository: quay.io/minio/minio
+            tag: RELEASE.2025-04-08T15-41-24Z
+            pullPolicy: IfNotPresent
+
+          configSecret:
+            name: minio-root-user
+            existingSecret: true
+
+          pools:
+            - name: pool-0
+              servers: 2
+              volumesPerServer: 2
+              size: 250Gi
+              storageClassName: minio-gp3-retain
+              resources:
+                requests:
+                  cpu: "2"
+                  memory: 4Gi
+                limits:
+                  cpu: "4"
+                  memory: 4Gi
+              affinity:
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchExpressions:
+                          - key: v1.min.io/tenant
+                            operator: In
+                            values:
+                              - minio-prod
+                      topologyKey: kubernetes.io/hostname
+
+          mountPath: /export
+          requestAutoCert: true
+
+          exposeServices:
+            minio: false
+            console: false
+
+          serviceMetadata:
+            minioServiceLabels: {}
+            minioServiceAnnotations: {}
+            consoleServiceLabels: {}
+            consoleServiceAnnotations: {}
+
+          users: []
+          podManagementPolicy: Parallel
+
+          env:
+            - name: MINIO_BROWSER
+              value: "on"
 
   destination:
     server: https://kubernetes.default.svc
